@@ -38,11 +38,7 @@ const files = {
 function scssTask() {
 	return src(files.style.src) // set source
 		.pipe(sourcemaps.init()) // Initialize sourcemap
-		.pipe(sass(
-			{  
-
-			}
-		)) // compile SCSS to CSS and send out a compressed output
+		.pipe(sass()) // compile SCSS to CSS and send out a compressed output
 		.pipe(postcss([autoprefixer(), cssnano()])) // PostCSS plugins
 		.pipe(rename( { suffix : '.min' } ))
 		.pipe(sourcemaps.write('./'))
