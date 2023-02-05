@@ -21,8 +21,8 @@ In this proejct, Gulp is configured to run the following functions:
 * Move final CSS and JS files to the `/dist` folder
 
 
-  I actually got this from the link below, then modified it to suit my needs! 
-  You can checkout codercoder on youtube she has really good courses. [TheCoderCoder](https://github.com/thecodercoder/frontend-boilerplate)
+I actually got this from the link below, then modified it to suit my needs! 
+You can checkout codercoder on youtube she has really good courses. [TheCoderCoder Frontend Boilerplate](https://github.com/thecodercoder/frontend-boilerplate)
 
-  You can checkout her gulp 4 walk through [here](https://coder-coder.com/gulp-4-walk-through).
+You can checkout her gulp 4 walk through [here](https://coder-coder.com/gulp-4-walk-through).
  
