@@ -14,8 +14,8 @@
     "url": "https://github.com/Agbortoko/frontend-boilerplate/issues"
   },
   "homepage": "https://github.com/Agbortoko/frontend-boilerplate#readme",
-  "devDependencies": {},
-  "dependencies": {
+
+  "devDependencies": {
     "autoprefixer": "^10.2.6",
     "browser-sync": "^2.27.4",
     "cssnano": "^5.0.6",
@@ -29,5 +29,7 @@
     "gulp-sourcemaps": "^3.0.0",
     "postcss": "^8.3.5",
     "sass": "^1.35.2"
-  }
+  },
+
+  "dependencies": {}
 }
