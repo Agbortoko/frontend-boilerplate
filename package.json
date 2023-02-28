@@ -1,35 +1,26 @@
 {
   "name": "frontend-boilerplate",
   "version": "1.0.0",
-  "description": "Simple front-end boilerplate using Gulp 4",
+  "description": "My personal simple front-end boilerplate using Gulp 4 for my frontend designs projects",
   "main": "gulpfile.js",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Agbortoko/frontend-boilerplate.git"
+  "scripts": {
+    "start": "echo Use command npm install to install all dev dependencies"
   },
   "keywords": [],
   "author": "RabbitMaid",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/Agbortoko/frontend-boilerplate/issues"
-  },
-  "homepage": "https://github.com/Agbortoko/frontend-boilerplate#readme",
-
+  "license": "GPL-3.0",
   "devDependencies": {
-    "autoprefixer": "^10.2.6",
-    "browser-sync": "^2.27.4",
-    "cssnano": "^5.0.6",
+    "@babel/core": "^7.21.0",
+    "@babel/preset-env": "^7.20.2",
+    "autoprefixer": "^10.4.13",
+    "browser-sync": "^2.27.12",
+    "cssnano": "^5.1.15",
     "gulp": "^4.0.2",
-    "gulp-concat": "^2.6.1",
-    "gulp-postcss": "^9.0.0",
-    "gulp-replace": "^1.1.3",
+    "gulp-babel": "^8.0.0",
+    "gulp-postcss": "^9.0.1",
     "gulp-rename": "^2.0.0",
-    "gulp-sass": "^5.0.0",
-    "gulp-terser": "^2.0.1",
-    "gulp-sourcemaps": "^3.0.0",
-    "postcss": "^8.3.5",
-    "sass": "^1.35.2"
-  },
-
-  "dependencies": {}
+    "gulp-sass": "^5.1.0",
+    "gulp-terser": "^2.1.0",
+    "sass": "^1.58.3"
+  }
 }

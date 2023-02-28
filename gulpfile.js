@@ -1,21 +1,23 @@
 // Initialize modules
+
 // Importing specific gulp API functions lets us write them below as series() instead of gulp.series()
-const { src, dest, watch, series, parallel } = require('gulp');
-// Importing all the Gulp-related packages we want to use
+const { src, dest, watch, series } = require('gulp');
+
+// Importing all other necessary modules
 const sass = require('gulp-sass')(require('sass'));
-const concat = require('gulp-concat');
-const terser = require('gulp-terser');
 const postcss = require('gulp-postcss');
 const autoprefixer = require('autoprefixer');
 const cssnano = require('cssnano');
-const replace = require('gulp-replace');
+const babel = require('gulp-babel');
+const terser = require('gulp-terser');
 const rename = require('gulp-rename');
 const browsersync = require('browser-sync').create();
-const sourcemaps = require('gulp-sourcemaps');
+
 
 // File paths
 
 const files = {
+    
     html : {
         src : "./**/*.html",
 		list: ["./**/*.html"],
@@ -24,50 +26,36 @@ const files = {
 
     style: {
         src :  "app/scss/**/*.scss",
+        main :  "app/scss/style.scss", // Main file in folder
         dest: "dist/css/"
     },
 
     js: {
         src: "app/js/**/*.js",
+        main:  "app/js/script.js", // Main file in folder
         dest: "dist/js/"
     }
 };
 
 
-// Sass task: compiles the style.scss file into style.css
+// Sass task compiles the style.scss file into style.min.css
 function scssTask() {
-	return src(files.style.src) // set source
-		.pipe(sourcemaps.init()) // Initialize sourcemap
+	return src(files.style.main, { sourcemaps: true}, {allowEmpty: true}) // set source and activate sourcemaps
 		.pipe(sass()) // compile SCSS to CSS and send out a compressed output
-		.pipe(postcss([autoprefixer(), cssnano()])) // PostCSS plugins
-		.pipe(rename( { suffix : '.min' } ))
-		.pipe(sourcemaps.write('./'))
-		.pipe(dest(files.style.dest)); // put final CSS in dist folder with sourcemap
+		.pipe(postcss([autoprefixer(), cssnano()])) // PostCSS plugins, prefix and minify css
+		.pipe(rename( { suffix : '.min' } )) // Rename file
+		.pipe(dest(files.style.dest, { sourcemaps: '.' })); // put final CSS in dist folder with sourcemap
 }
 
-// JS task: concatenates and uglifies JS files to script.js
+// JS task to uglifies JS files to script.min.js
 function jsTask() {
-	return src(
-		[
-			files.js.src,
-			//,'!' + 'includes/js/jquery.min.js', // to exclude any specific files
-		],
-	)
-		.pipe(sourcemaps.init()) // Initialize sourcemap
-		.pipe(concat('all.js'))
-		.pipe(terser())
-		.pipe(rename( { suffix : '.min' } ))
-		.pipe(sourcemaps.write('./'))
-		.pipe(dest(files.js.dest));
+	return src(files.js.main, {sourcemaps: true}, {allowEmpty: true}) // set source and activate sourcemaps
+		.pipe(babel( { presets: ['@babel/preset-env'] })) // Compile ES6 js to older js for browser compatibility
+		.pipe(terser()) // Minify javascript
+		.pipe(rename( { suffix : '.min' } )) // Rename file
+		.pipe(dest(files.js.dest, { sourcemaps: '.' })); // put final CSS in dist folder with sourcemap
 }
 
-// Cachebust
-function cacheBustTask() {
-	var cbString = new Date().getTime();
-	return src(files.html.list)
-		.pipe(replace(/cb=\d+/g, 'cb=' + cbString))
-		.pipe(dest(files.html.dest));
-}
 
 // Browsersync to spin up a local server
 function browserSyncServe(cb) {
@@ -87,44 +75,35 @@ function browserSyncServe(cb) {
 	});
 	cb();
 }
+
+
 function browserSyncReload(cb) {
 	// reloads browsersync server
 	browsersync.reload();
 	cb();
 }
 
-// Watch task: watch SCSS and JS files for changes
-// If any change, run scss and js tasks simultaneously
+
+// Watch task without active browser sync
 function watchTask() {
 	watch(
 		[files.style.src, files.js.src],
-		{ interval: 1000, usePolling: true }, //Makes docker work
-		series(parallel(scssTask, jsTask), cacheBustTask)
+		{ interval: 1000, usePolling: true }, 
+		series(scssTask, jsTask)
 	);
 }
 
-// Browsersync Watch task
-// Watch HTML file for change and reload browsersync server
-// watch SCSS and JS files for changes, run scss and js tasks simultaneously and update browsersync
+// Watch task while browser sync is active
 function bsWatchTask() {
 	watch(files.html.src, browserSyncReload);
 	watch(
 		[files.style.src, files.js.src],
-		{ interval: 1000, usePolling: true }, //Makes docker work
-		series(parallel(scssTask, jsTask), cacheBustTask, browserSyncReload)
+		{ interval: 1000, usePolling: true },
+		series(scssTask, jsTask, browserSyncReload)
 	);
 }
 
-// Export the default Gulp task so it can be run
-// Runs the scss and js tasks simultaneously
-// then runs cacheBust, then watch task
-exports.default = series(parallel(scssTask, jsTask), cacheBustTask, watchTask);
 
-// Runs all of the above but also spins up a local Browsersync server
-// Run by typing in "gulp bs" on the command line
-exports.bs = series(
-	parallel(scssTask, jsTask),
-	cacheBustTask,
-	browserSyncServe,
-	bsWatchTask,
-);
+exports.default = series(scssTask, jsTask, watchTask); // gulp command
+
+exports.sync = series(scssTask, jsTask, browserSyncServe, bsWatchTask); // gulp sync command
